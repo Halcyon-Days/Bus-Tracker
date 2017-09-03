@@ -1,5 +1,6 @@
 package io.github.halcyon_daze;
 
+import java.awt.List;
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -9,7 +10,10 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 
+import org.jsoup.Connection;
+import org.jsoup.Connection.Method;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -19,9 +23,9 @@ import org.jsoup.select.Elements;
 public class BusTracker {
     
     public static void main(String[] args) {
-        getTimes("https://nb.translink.ca/nextbus.ashx?cp=gssr%2FSeI8rdrYzRqLxH%2FfgZYTGg==;028");
+        //getTimes("https://nb.translink.ca/nextbus.ashx?cp=gssr%2FSeI8rdrYzRqLxH%2FfgZYTGg==;028");
         //getTimes("https://nb.translink.ca/text/stop/58088/route/028#");
-        System.out.println(getRequestURL("https://nb.translink.ca/text/stop/58088/route/028#"));
+        //System.out.println(getRequestURL("https://nb.translink.ca/text/stop/58088/route/028#"));
         getTimes(getRequestURL("https://nb.translink.ca/text/stop/58088/route/028#"));
         //getTimes("https://nb.translink.ca/nextbus.ashx?cp=gssr%2Fr1IRtM55P6ChF3OTKucevg==;028");
         //TO DO: extract link from nbt.initStopAndRoute('ibQxaITdKhy+SLw+h2e8aQ==', '028')//]]>, parse into ajax request and automate request process
@@ -51,6 +55,27 @@ public class BusTracker {
         }
     }
     
+    public static void getTimes(ArrayList<String> url){
+        System.out.println("Connecting to " + url.get(0));
+        
+        try {
+            URL pageURL = new URL(url.get(0));
+            
+            HttpURLConnection urlConnection = (HttpURLConnection) pageURL.openConnection();
+            urlConnection.setRequestProperty("Cookie", url.get(1)); 
+            urlConnection.setRequestMethod("GET");
+            
+            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+            String result = convertStreamToString(in);
+            
+            System.out.print(result.toString());
+                    
+        } catch (IOException e) {
+            System.out.println("Could not extract info from " + url.get(0));
+            return; 
+        }
+    }
+    
     private static String convertStreamToString (InputStream in) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(in));
         StringBuilder sb = new StringBuilder();
@@ -74,16 +99,28 @@ public class BusTracker {
         return sb.toString();
     }
     
-    private static String getRequestURL (String url) {
+    private static ArrayList<String> getRequestURL (String url) {
         System.out.println("Fetching " + url + "...");
         
         Document webPage;
+        Connection connection;
+        Map<String, String> cookies;
+        ArrayList<String> returnURL = new ArrayList<String>();
+        
         try {
-        webPage = Jsoup.connect(url).get();
+        connection = Jsoup.connect(url);
+        webPage = connection.get();
+        cookies = connection.method(Method.POST).execute().cookies();
         } catch (IOException e) {
             System.out.println("Unable to connect to " + url);
-            return "";
+            return returnURL;
         } 
+        
+        String cookieString = new String("");
+        for (String key: cookies.keySet()) {
+            cookieString += key + "=" + cookies.get(key);
+            //System.out.println(key + " " + cookies.get(key));
+        }
         
         Elements scripts = webPage.getElementsByTag("script");
         
@@ -97,7 +134,10 @@ public class BusTracker {
         request += parameters.get(0) + ";" + parameters.get(1);
         
         System.out.println(request);
-        return "https://nb.translink.ca/nextbus.ashx?cp=" + request.replace("/\\+/g", "%2B").replace("/", "%2F");
+        returnURL.add("https://nb.translink.ca/nextbus.ashx?cp=" + request.replace("/\\+/g", "%2B").replace("/", "%2F"));
+        returnURL.add(cookieString);
+        
+        return returnURL;
         
     }
     
@@ -116,4 +156,5 @@ public class BusTracker {
         
         return functionParameters;
     }
+    
 }
