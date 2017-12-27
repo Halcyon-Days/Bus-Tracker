@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Map;
 
+import org.apache.http.conn.ConnectionRequest;
 import org.jsoup.Connection;
 import org.jsoup.Connection.Method;
 import org.jsoup.Jsoup;
@@ -27,7 +28,8 @@ public class BusTracker {
         //getTimes("https://nb.translink.ca/text/stop/58088/route/028#");
         //System.out.println(getRequestURL("https://nb.translink.ca/text/stop/58088/route/028#"));
         getTimes(getRequestURL("https://nb.translink.ca/text/stop/58088/route/028#"));
-        //getTimes("https://nb.translink.ca/nextbus.ashx?cp=gssr%2Fr1IRtM55P6ChF3OTKucevg==;028");
+        getTimes("https://nb.translink.ca/nextbus.ashx?cp=gssr%2F7zIWH3i1SeknjAV%2B%2Bc5w8Q==;028");
+        
         //TO DO: extract link from nbt.initStopAndRoute('ibQxaITdKhy+SLw+h2e8aQ==', '028')//]]>, parse into ajax request and automate request process
         //Can extract, each link has specific cookies that need to be set
 
@@ -41,7 +43,7 @@ public class BusTracker {
             URL pageURL = new URL(url);
             
             HttpURLConnection urlConnection = (HttpURLConnection) pageURL.openConnection();
-            urlConnection.setRequestProperty("Cookie", "_utma=61047657.704264432.1503808521.1503808521.1503812936.2;_utmz=61047657.1503808521.1.1.utmcsr=(direct)|utmccn=(direct)|utmcmd=(none);ASP.NET_Sessionid=xst54zciexwzgrgr4eg5pzxa;ARRAffinity=d930dc5fc3a61ca4548df4822e7cff4111b8d71cc60cb328700427e4bfd458f9;nb.cookie=enabled;_utmb=61047657.1.10.1503812936;_utmc=61047657;_utmt=1;_ga=GA1.2.704264432.1503808521;_gid=GA1.2.1990847912.1503812943;nb.sgn=SnVuVGFuZw0K");
+            urlConnection.setRequestProperty("Cookie", "ASP.NET_SessionId=k1qimeyofc43jpc1ibjilzlg;ARRAffinity=d930dc5fc3a61ca4548df4822e7cff4111b8d71cc60cb328700427e4bfd458f9;nb.cookie=enabled");
             urlConnection.setRequestMethod("GET");
             
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
@@ -62,9 +64,18 @@ public class BusTracker {
             URL pageURL = new URL(url.get(0));
             
             HttpURLConnection urlConnection = (HttpURLConnection) pageURL.openConnection();
-            urlConnection.setRequestProperty("Cookie", url.get(1)); 
-            urlConnection.setRequestMethod("GET");
+            System.out.println(url.get(1) + "nb.cookie=enabled");
+            urlConnection.setRequestMethod("POST");
+            urlConnection.setRequestProperty("Cookie", url.get(1) + "nb.cookie=enabled"); 
+            urlConnection.setRequestProperty("Accept", "*/*");
+            urlConnection.setRequestProperty("If-Modified-Since", "Sun, 31 Oct 2010 00:00:00 GMT");
+            urlConnection.setRequestProperty("DNT", "1");
+            urlConnection.setRequestProperty("Connection", "keep-alive");
+            urlConnection.setRequestProperty("Cache-Control", "max-age=0");
+            urlConnection.setRequestProperty("Accept-Language", "en-US,en;q=0.8"); 
+            urlConnection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36");
             
+            urlConnection.setRequestMethod("GET");
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
             String result = convertStreamToString(in);
             
@@ -111,6 +122,12 @@ public class BusTracker {
         connection = Jsoup.connect(url);
         webPage = connection.get();
         cookies = connection.method(Method.POST).execute().cookies();
+        
+        Connection.Request cookiedata = connection.request();
+        for(Connection.KeyVal key: cookiedata.data()) {
+            System.out.println(key.key() + " : " + key.value());
+        }
+        
         } catch (IOException e) {
             System.out.println("Unable to connect to " + url);
             return returnURL;
@@ -118,7 +135,7 @@ public class BusTracker {
         
         String cookieString = new String("");
         for (String key: cookies.keySet()) {
-            cookieString += key + "=" + cookies.get(key);
+            cookieString += key + "=" + cookies.get(key) + " ; ";
             //System.out.println(key + " " + cookies.get(key));
         }
         
@@ -132,9 +149,8 @@ public class BusTracker {
         }
         
         request += parameters.get(0) + ";" + parameters.get(1);
-        
-        System.out.println(request);
-        returnURL.add("https://nb.translink.ca/nextbus.ashx?cp=" + request.replace("/\\+/g", "%2B").replace("/", "%2F"));
+
+        returnURL.add("https://nb.translink.ca/nextbus.ashx?cp=" + request.replace("+", "%2B").replace("/", "%2F"));
         returnURL.add(cookieString);
         
         return returnURL;
@@ -156,5 +172,25 @@ public class BusTracker {
         
         return functionParameters;
     }
-    
+    /*
+    private static void getCookies(String url) {
+        System.out.println("Connecting to " + url);
+        
+        try {
+            URL pageURL = new URL(url);
+            
+            HttpURLConnection urlConnection = (HttpURLConnection) pageURL.openConnection();
+            Map<String, java.util.List<String>> cookies = urlConnection.getRequestProperties();
+            
+            for( String key : cookies.keySet()) {
+                for (String item: cookies.get(key)) {
+                    System.out.println(item);
+                }
+            }
+            
+        } catch (IOException e) {
+            System.out.println("Could not extract info from " + url);
+            return; 
+        }
+    }*/
 }
