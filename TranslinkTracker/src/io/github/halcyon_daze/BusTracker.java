@@ -20,6 +20,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+/*
+ * Code used to connect to translink website and retrieve bus times
+ * Archived, switched to using translink api instead
+ */
 
 public class BusTracker {
     
