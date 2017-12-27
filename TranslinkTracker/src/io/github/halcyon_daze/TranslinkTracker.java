@@ -1,25 +1,16 @@
 package io.github.halcyon_daze;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 public class TranslinkTracker {
     
@@ -39,11 +30,17 @@ public class TranslinkTracker {
 
     }
     
+    /*
+     * @param url the location to extract times from
+     * 
+     * @return a list of all times at the given url
+     */
     public static ArrayList<String> getTimes(String url) {
         Document doc = getPageAsDoc(url);
         NodeList nodes = doc.getElementsByTagName("Schedule");
         ArrayList<String> times = new ArrayList<String>();
         
+        System.out.println("Bus times for route " + doc.getElementsByTagName("RouteName").item(0).getTextContent() + " in the " + doc.getElementsByTagName("Direction").item(0).getTextContent() + " direction acquired!");
         for (int i = 0; i < nodes.getLength(); i++) {
             Element currentElement = (Element) nodes.item(i);
             
