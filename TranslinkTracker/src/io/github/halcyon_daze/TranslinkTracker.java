@@ -76,32 +76,6 @@ public class TranslinkTracker {
     
     /*
      * @param url
-     * @return String of the contents of what is at the url, may return empty String if invalid url
-     */
-    public static String getPage(String url){
-        System.out.println("Connecting to " + url);
-        
-        try {
-            URL pageURL = new URL(url);
-            
-            HttpURLConnection urlConnection = (HttpURLConnection) pageURL.openConnection();
-            urlConnection.setRequestMethod("GET");
-            
-            InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-            String result = convertStreamToString(in);
-            
-            System.out.print(result);
-            return result;
-                    
-        } catch (IOException e) {
-            System.out.println("Could not extract info from " + url);
-            return ""; 
-        }
-
-    }
-    
-    /*
-     * @param url
      * @return XML Document of the contents of what is at the url, may return null if invalid url
      * With reference to https://www.tutorialspoint.com/java_xml/java_dom_parse_document.htm
      */
@@ -123,28 +97,5 @@ public class TranslinkTracker {
         
         return doc;
 
-    }
-    
-    private static String convertStreamToString (InputStream in) {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        StringBuilder sb = new StringBuilder();
-        
-        String input;
-        
-        try {
-            while ((input = reader.readLine()) != null) {
-                sb.append(input).append('\n');
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-            in.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        
-        return sb.toString();
     }
 }
