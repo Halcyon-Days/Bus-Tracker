@@ -2,6 +2,7 @@ package io.github.halcyon_daze;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -15,15 +16,11 @@ import org.w3c.dom.NodeList;
 public class TranslinkTracker {
     
     
-    public static void main(String[] args) {
-        String api;
-        
+    public static void main(String[] args) throws IOException {
+ 
         try {
-            api = getAPIKey();
-            
-            for(String s: getTimes("http://api.translink.ca/rttiapi/v1/stops/58090/estimates?apikey=" + api + "&count=3&timeframe=1440")) {
-                System.out.println(s);
-            }
+            getRouteInfo(58090).printTimes();
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
@@ -31,11 +28,22 @@ public class TranslinkTracker {
     }
     
     /*
-     * @param url the location to extract times from
+     * @param stop number of the route stop to extract info from
      * 
-     * @return a list of all times at the given url
+     * @return a BusStop object on the routestop
      */
-    public static ArrayList<String> getTimes(String url) {
+    public static BusStop getRouteInfo(int routeNo) throws IOException {
+        String api = getAPIKey();
+        return getRouteInfo("http://api.translink.ca/rttiapi/v1/stops/" + routeNo + "/estimates?apikey=" + api + "&timeframe=1440");
+    }
+    
+    /*
+     * @param url url of the route stop to extract info from
+     * 
+     * @return a BusStop object on the routestop
+     */
+    public static BusStop getRouteInfo(String url) throws IOException {
+
         Document doc = getPageAsDoc(url);
         NodeList nodes = doc.getElementsByTagName("Schedule");
         ArrayList<String> times = new ArrayList<String>();
@@ -44,10 +52,15 @@ public class TranslinkTracker {
         for (int i = 0; i < nodes.getLength(); i++) {
             Element currentElement = (Element) nodes.item(i);
             
-            times.add("Bus #" + i + " coming at " + currentElement.getElementsByTagName("ExpectedLeaveTime").item(0).getTextContent());
+            times.add(currentElement.getElementsByTagName("ExpectedLeaveTime").item(0).getTextContent());
         }
         
-        return times;
+        BusStop stopInfo = new BusStop( doc.getElementsByTagName("RouteNo").item(0).getTextContent(), 
+                                        doc.getElementsByTagName("RouteName").item(0).getTextContent(), 
+                                        doc.getElementsByTagName("Direction").item(0).getTextContent(),
+                                        times );
+
+        return stopInfo;
     }
     
     /*
@@ -76,7 +89,7 @@ public class TranslinkTracker {
      * @return XML Document of the contents of what is at the url, may return null if invalid url
      * With reference to https://www.tutorialspoint.com/java_xml/java_dom_parse_document.htm
      */
-    public static Document getPageAsDoc(String url){
+    public static Document getPageAsDoc(String url) throws IOException{
         System.out.println("Connecting to " + url);
         
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -88,8 +101,8 @@ public class TranslinkTracker {
             doc = docBuilder.parse(url);
             
         } catch (Exception e) {
-            e.printStackTrace();
             System.out.println("Could not extract info from " + url);
+            throw new java.io.IOException();
         }
         
         return doc;

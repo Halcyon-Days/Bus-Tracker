@@ -27,37 +27,36 @@
         <TableRow
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:background="@android:color/background_light">
+            android:background="@android:color/background_light"
+            android:orientation="vertical">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:id="@+id/BusIDText"
-                android:text=" bus #           "
-                android:layout_weight="1"
-                android:textAppearance="@android:style/TextAppearance.Material.Widget.ActionMode"
-                android:elevation="1dp"
-                tools:text="Bus #   "
-                android:textSize="24sp"
-                android:textStyle="normal|bold"
-                android:textAlignment="center" />
-
-            <TextView
-                android:text="Next Bus Arrival"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/NextTimeText"
                 android:layout_weight="1"
-                android:textAppearance="@android:style/TextAppearance.Material.Widget.ActionMode"
-                android:textAlignment="textEnd"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentEnd="true"
+                android:elevation="1dp"
+                android:text=" bus #           "
+                android:textAlignment="center"
                 android:textSize="24sp"
                 android:textStyle="normal|bold"
+                tools:text="Bus #   " />
+
+            <TextView
+                android:id="@+id/NextTimeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_weight="1"
+                android:baselineAligned="false"
                 android:elevation="1dp"
-                android:gravity="right|end" />
+                android:gravity="right|end"
+                android:text="Next Bus Arrival"
+                android:textAlignment="center"
+                android:textSize="24sp"
+                android:textStyle="normal|bold" />
 
         </TableRow>
 
@@ -70,4 +69,13 @@
 
 
     </TableLayout>
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:text="Add new Bus" />
 </RelativeLayout>
