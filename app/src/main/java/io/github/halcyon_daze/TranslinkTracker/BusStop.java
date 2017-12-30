@@ -1,7 +1,7 @@
-package io.github.halcyon_daze;
+package io.github.halcyon_daze.TranslinkTracker;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class BusStop {
 
@@ -9,14 +9,14 @@ public class BusStop {
     private String routeName;
     private String direction;
     private ArrayList<String> nextDepartureTimes;
-    private LocalDateTime lastUpdated;
+    private Date lastUpdated;
     
     public BusStop(String routeNo, String routeName, String direction, ArrayList<String> departureTimes) {
         this.direction = direction;
         this.routeNo = routeNo;
         this.routeName = routeName;
         nextDepartureTimes = departureTimes;
-        lastUpdated = LocalDateTime.now();
+        lastUpdated = new Date();
     }
     
     public String getRouteNo() {
@@ -35,7 +35,7 @@ public class BusStop {
         return new ArrayList<String>(nextDepartureTimes);
     }
     
-    public LocalDateTime getLastUpdated() {
+    public Date getLastUpdated() {
         return lastUpdated;   
     }
     

@@ -1,11 +1,14 @@
 package com.example.chris.bustracker;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.google.android.gms.appindexing.Action;
@@ -30,44 +33,22 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        /*
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });*/
 
         BusIDText = (TextView) findViewById(R.id.BusIDText);
         NextTimeText = (TextView) findViewById(R.id.NextTimeText);
 
-        /*<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-
-        <TableRow
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-
-        <TextView
-        android:text="Time"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_column="1" />
-
-        <TextClock
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/textClock"
-        android:layout_column="2" />
-
-        </TableRow>*/
-
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
+
+        FloatingActionButton newBusButton = (FloatingActionButton) findViewById(R.id.addNewBusBtn);
+        newBusButton.setOnClickListener(new View.OnClickListener() {
+          @Override
+            public void onClick(View v) {
+              Intent startIntent = new Intent(getApplicationContext(), Main2Activity.class);
+              startActivity(startIntent);
+          }
+        });
     }
 
     @Override
@@ -116,6 +97,8 @@ public class MainActivity extends AppCompatActivity {
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client.connect();
         AppIndex.AppIndexApi.start(client, getIndexApiAction());
+
+
     }
 
     @Override

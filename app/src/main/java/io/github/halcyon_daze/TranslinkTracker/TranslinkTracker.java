@@ -1,6 +1,12 @@
-package io.github.halcyon_daze;
+package io.github.halcyon_daze.TranslinkTracker;
 
-import java.io.File;
+import android.content.Context;
+import android.content.res.AssetManager;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,31 +15,16 @@ import java.util.Scanner;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
 public class TranslinkTracker {
-    
-    
-    public static void main(String[] args) throws IOException {
- 
-        try {
-            getRouteInfo(58090).printTimes();
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
 
-    }
-    
     /*
      * @param stop number of the route stop to extract info from
      * 
      * @return a BusStop object on the routestop
      */
-    public static BusStop getRouteInfo(int routeNo) throws IOException {
-        String api = getAPIKey();
+    public static BusStop getRouteInfo(Context context, int routeNo) throws FileNotFoundException, IOException  {
+        String api = getAPIKey(context);
         return getRouteInfo("http://api.translink.ca/rttiapi/v1/stops/" + routeNo + "/estimates?apikey=" + api + "&timeframe=1440");
     }
     
@@ -66,17 +57,18 @@ public class TranslinkTracker {
     /*
      * @return API key located at apikey/keyfile.txt from top level directory
      */
-    public static String getAPIKey() throws FileNotFoundException {
+    public static String getAPIKey(Context context) throws FileNotFoundException {
         String key = "";
         Scanner sc;
-        
+        AssetManager assetManager = context.getAssets();
+
         try {
-            sc = new Scanner(new File("apikey/keyfile.txt"));
+            sc = new Scanner(assetManager.open("keyfile.txt"));
             while(sc.hasNextLine()) {
                 key = sc.nextLine();           
             }
             sc.close();
-        } catch(FileNotFoundException e) {
+        } catch(Exception e) {
             System.out.println("Invalid key file! \nKey file should be located at apikey/keyfile.txt, containing only the key in the file!\n");
             throw new FileNotFoundException();
         }
@@ -89,7 +81,7 @@ public class TranslinkTracker {
      * @return XML Document of the contents of what is at the url, may return null if invalid url
      * With reference to https://www.tutorialspoint.com/java_xml/java_dom_parse_document.htm
      */
-    public static Document getPageAsDoc(String url) throws IOException{
+    public static Document getPageAsDoc(String url) throws IOException, UnsupportedOperationException{
         System.out.println("Connecting to " + url);
         
         DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
@@ -100,9 +92,12 @@ public class TranslinkTracker {
             docBuilder = docFactory.newDocumentBuilder();
             doc = docBuilder.parse(url);
             
-        } catch (Exception e) {
+        } catch (IOException e) {
             System.out.println("Could not extract info from " + url);
             throw new java.io.IOException();
+        } catch (Exception e) {
+            System.out.println("Parse error");
+            throw new UnsupportedOperationException();
         }
         
         return doc;
