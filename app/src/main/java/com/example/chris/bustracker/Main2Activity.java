@@ -9,53 +9,53 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 
 import io.github.halcyon_daze.TranslinkTracker.BusStop;
 import io.github.halcyon_daze.TranslinkTracker.TranslinkTracker;
 
 public class Main2Activity extends AppCompatActivity {
 
+    TextView returnText;
+    EditText searchText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
 
+        returnText = (TextView) findViewById(R.id.returnTxt);
+        searchText = (EditText) findViewById(R.id.searchBar);
+
         FloatingActionButton searchBtn = (FloatingActionButton) findViewById(R.id.searchBtn);
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AsyncBusStop().execute(findViewById(R.id.returnTxt), findViewById(R.id.searchBar), getApplicationContext() );
+                new AsyncBusStop().execute(getApplicationContext() );
             }
         });
     }
 
-    private static class AsyncBusStop extends AsyncTask<Object, Void, BusStop> {
-        protected BusStop doInBackground(Object ... input) {
+    private class AsyncBusStop extends AsyncTask<Context, Void, BusStop> {
+        protected BusStop doInBackground(Context ... input) {
             BusStop newStop = null;
-            final TextView returnText = (TextView) input[0];
-            final EditText searchText = (EditText) input[1];
-
             try {
-                newStop = TranslinkTracker.getRouteInfo((Context) input[2], Integer.parseInt(searchText.getText().toString()));
-                returnText.setText("Next bus #" + newStop.getRouteNo() + " coming at " + newStop.getNextDepartureTimes().get(0));
+                newStop = TranslinkTracker.getRouteInfo( input[0], Integer.parseInt(searchText.getText().toString()));
                 return newStop;
-            } catch (FileNotFoundException e) {
-                returnText.setText("Invalid Api Key!");
-            }  catch (UnsupportedEncodingException e) {
-                returnText.setText("Parsing failed!");
-            } catch (IOException e) {
-                returnText.setText("Something went wrong!");
+            }  catch (IOException e) {
             }
 
             return newStop;
         }
 
         protected void onPostExecute(BusStop stop) {
-            if(stop == null) {
+            if(stop != null) {
+                returnText.setText("Added stop to list!" ); //Next bus #" + stop.getRouteNo() + " coming at " + stop.getNextDepartureTimes().get(0));
+            } else {
+                returnText.setText("Error finding stop!" );
             }
+
+
         }
     }
 }

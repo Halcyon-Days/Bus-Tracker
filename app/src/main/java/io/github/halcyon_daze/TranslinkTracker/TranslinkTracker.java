@@ -6,9 +6,11 @@ import android.content.res.AssetManager;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+import org.xml.sax.InputSource;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -69,7 +71,7 @@ public class TranslinkTracker {
             }
             sc.close();
         } catch(Exception e) {
-            System.out.println("Invalid key file! \nKey file should be located at apikey/keyfile.txt, containing only the key in the file!\n");
+            System.out.println("Invalid key file! \nKey file should be located at keyfile.txt, containing only the key in the file!\n");
             throw new FileNotFoundException();
         }
         System.out.println("Acquired key = " + key + "at apikey/keyfile.txt");
@@ -90,8 +92,8 @@ public class TranslinkTracker {
         
         try {
             docBuilder = docFactory.newDocumentBuilder();
-            doc = docBuilder.parse(url);
-            
+            doc = docBuilder.parse(new InputSource(new URL(url).openStream()));
+
         } catch (IOException e) {
             System.out.println("Could not extract info from " + url);
             throw new java.io.IOException();
@@ -99,7 +101,7 @@ public class TranslinkTracker {
             System.out.println("Parse error");
             throw new UnsupportedOperationException();
         }
-        
+
         return doc;
 
     }
