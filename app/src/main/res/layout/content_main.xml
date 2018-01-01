@@ -32,7 +32,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:elevation="1dp"
                 android:text=" bus #           "
                 android:textAlignment="center"
                 android:textSize="24sp"
@@ -45,8 +44,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:baselineAligned="false"
-                android:elevation="1dp"
-                android:gravity="right|end"
+                android:gravity="end"
                 android:text="Next Bus Arrival"
                 android:textAlignment="center"
                 android:textSize="24sp"
@@ -62,6 +60,17 @@
 
 
     </TableLayout>
+
+    <ListView
+        android:id="@+id/nextTimesList"
+        android:layout_width="373dp"
+        android:layout_height="426dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="12dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/addNewBusBtn"
@@ -94,14 +103,14 @@
         android:layout_height="37dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="460dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.674"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tableLayout" />
+        app:layout_constraintTop_toBottomOf="@android:id/list" />
 
     <EditText
-        android:id="@+id/editText2"
+        android:id="@+id/lastUpdated"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"

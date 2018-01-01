@@ -25,9 +25,9 @@ public class TranslinkTracker {
      * 
      * @return a BusStop object on the routestop
      */
-    public static BusStop getRouteInfo(Context context, int routeNo) throws FileNotFoundException, IOException  {
+    public static BusStop getRouteInfo(Context context, String routeNo) throws FileNotFoundException, IOException  {
         String api = getAPIKey(context);
-        return getRouteInfo("http://api.translink.ca/rttiapi/v1/stops/" + routeNo + "/estimates?apikey=" + api + "&timeframe=1440");
+        return getRouteInfo("http://api.translink.ca/rttiapi/v1/stops/" + routeNo + "/estimates?apikey=" + api + "&timeframe=1440", routeNo);
     }
     
     /*
@@ -35,7 +35,7 @@ public class TranslinkTracker {
      * 
      * @return a BusStop object on the routestop
      */
-    public static BusStop getRouteInfo(String url) throws IOException {
+    public static BusStop getRouteInfo(String url, String routeNo) throws IOException {
 
         Document doc = getPageAsDoc(url);
         NodeList nodes = doc.getElementsByTagName("Schedule");
@@ -48,7 +48,8 @@ public class TranslinkTracker {
             times.add(currentElement.getElementsByTagName("ExpectedLeaveTime").item(0).getTextContent());
         }
         
-        BusStop stopInfo = new BusStop( doc.getElementsByTagName("RouteNo").item(0).getTextContent(), 
+        BusStop stopInfo = new BusStop( String.valueOf(routeNo),
+                                        doc.getElementsByTagName("RouteNo").item(0).getTextContent(),
                                         doc.getElementsByTagName("RouteName").item(0).getTextContent(), 
                                         doc.getElementsByTagName("Direction").item(0).getTextContent(),
                                         times );

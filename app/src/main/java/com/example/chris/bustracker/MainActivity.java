@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.appindexing.Action;
@@ -16,10 +17,17 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.appindexing.Thing;
 import com.google.android.gms.common.api.GoogleApiClient;
 
+import java.util.ArrayList;
+
+import io.github.halcyon_daze.TranslinkTracker.BusStop;
+
 public class MainActivity extends AppCompatActivity {
 
-    TextView BusIDText;
-    TextView NextTimeText;
+    private TextView BusIDText;
+    private TextView NextTimeText;
+    private TextView lastUpdatedText;
+    ListView nextTimesList;
+
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
      * See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -33,9 +41,17 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
+        nextTimesList = (ListView) findViewById(R.id.nextTimesList);
         BusIDText = (TextView) findViewById(R.id.BusIDText);
         NextTimeText = (TextView) findViewById(R.id.NextTimeText);
+        lastUpdatedText = (TextView) findViewById(R.id.lastUpdated);
+
+        Singleton.getInstance().addStopList(new BusStop("123", "123", "123", "123", new ArrayList<String>()));//
+
+        BusTimeAdapter busAdapter = new BusTimeAdapter(this, Singleton.getInstance().getStopList());
+        nextTimesList.setAdapter(busAdapter);
+
+        lastUpdatedText.setText(String.valueOf(Singleton.getInstance().getStopList().size()));//
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -109,5 +125,18 @@ public class MainActivity extends AppCompatActivity {
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         AppIndex.AppIndexApi.end(client, getIndexApiAction());
         client.disconnect();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        lastUpdatedText.setText(String.valueOf(Singleton.getInstance().getStopList().size()));
+        BusTimeAdapter busAdapter = new BusTimeAdapter(this, Singleton.getInstance().getStopList());
+        nextTimesList.setAdapter(busAdapter);
+    }
+
+    public void displayStops() {
+
     }
 }

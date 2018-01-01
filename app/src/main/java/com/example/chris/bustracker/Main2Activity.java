@@ -39,8 +39,9 @@ public class Main2Activity extends AppCompatActivity {
     private class AsyncBusStop extends AsyncTask<Context, Void, BusStop> {
         protected BusStop doInBackground(Context ... input) {
             BusStop newStop = null;
+
             try {
-                newStop = TranslinkTracker.getRouteInfo( input[0], Integer.parseInt(searchText.getText().toString()));
+                newStop = TranslinkTracker.getRouteInfo( input[0], searchText.getText().toString());
                 return newStop;
             }  catch (IOException e) {
             }
@@ -50,11 +51,11 @@ public class Main2Activity extends AppCompatActivity {
 
         protected void onPostExecute(BusStop stop) {
             if(stop != null) {
-                returnText.setText("Added stop to list!" ); //Next bus #" + stop.getRouteNo() + " coming at " + stop.getNextDepartureTimes().get(0));
+                returnText.setText("Added stop to list!" );
+                Singleton.getInstance().addStopList(stop);
             } else {
                 returnText.setText("Error finding stop!" );
             }
-
 
         }
     }

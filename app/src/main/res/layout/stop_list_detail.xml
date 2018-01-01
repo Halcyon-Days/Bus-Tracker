@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/stopNo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="27dp"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="18dp"
+        android:text="stopNo"
+        android:textSize="24sp" />
+
+    <TextView
+        android:id="@+id/nextTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/laterTime"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginEnd="37dp"
+        android:layout_marginRight="37dp"
+        android:text="nextTime"
+        android:textSize="20sp" />
+
+    <TextView
+        android:id="@+id/laterTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/nextTime"
+        android:layout_alignRight="@+id/nextTime"
+        android:layout_below="@+id/stopNo"
+        android:text="laterTime"
+        android:textAlignment="viewEnd"
+        android:textSize="10sp" />
+</RelativeLayout>
