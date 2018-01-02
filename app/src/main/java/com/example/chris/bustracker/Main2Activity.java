@@ -51,8 +51,12 @@ public class Main2Activity extends AppCompatActivity {
 
         protected void onPostExecute(BusStop stop) {
             if(stop != null) {
-                returnText.setText("Added stop to list!" );
-                Singleton.getInstance().addStopList(stop);
+                if(!Singleton.getInstance().isStopInList(stop.getStopNo())) {
+                    returnText.setText("Added " + stop.getStopNo() + " to list!");
+                    Singleton.getInstance().addStop(stop);
+                } else {
+                    returnText.setText("Stop has already been added to List!" );
+                }
             } else {
                 returnText.setText("Error finding stop!" );
             }

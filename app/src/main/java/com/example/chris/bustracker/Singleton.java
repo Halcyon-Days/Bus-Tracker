@@ -31,9 +31,31 @@ public final class Singleton {
         return stopList;
     }
 
-    public void addStopList(BusStop s) {
+    public boolean isStopInList(String stopNo) {
+        for(BusStop s: stopList) {
+            if(s.getStopNo().equals(stopNo)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public void addStop(BusStop s) {
         listLock.lock();
         stopList.add(s);
+        listLock.unlock();
+    }
+
+    public void removeStop(BusStop s) {
+        listLock.lock();
+        stopList.remove(s);
+        listLock.unlock();
+    }
+
+    public void changeStopList(ArrayList<BusStop> s) {
+        listLock.lock();
+        this.stopList = s;
         listLock.unlock();
     }
 }

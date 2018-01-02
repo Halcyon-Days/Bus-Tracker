@@ -43,17 +43,17 @@ public class BusTimeAdapter extends BaseAdapter {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View v = mInflater.inflate(R.layout.stop_list_detail, null);
-        TextView routeNoTextView = (TextView) v.findViewById(R.id.stopNo);
+        TextView routeNoTextView = (TextView) v.findViewById(R.id.detailsRow1);
         TextView nextTimeTextView = (TextView) v.findViewById(R.id.nextTime);
         TextView laterTimeTextView = (TextView) v.findViewById(R.id.laterTime);
 
         routeNoTextView.setText(stopList.get(position).getStopNo());
         if(stopList.get(position).getNextDepartureTimes().size() > 0) {
-            nextTimeTextView.setText(stopList.get(position).getRouteNo() + " at " + stopList.get(position).getNextDepartureTimes().get(0));
+            nextTimeTextView.setText(stopList.get(position).getRouteNo() + " at " + stopList.get(position).getNextDepartureTimes().get(0).split(" ")[0]);
         }
 
         if(stopList.get(position).getNextDepartureTimes().size() > 1) {
-            laterTimeTextView.setText("The " + stopList.get(position).getRouteNo()+ " bus after will arrive at " + stopList.get(position).getNextDepartureTimes().get(1));
+            laterTimeTextView.setText("The " + stopList.get(position).getRouteNo()+ " bus after will arrive at " + stopList.get(position).getNextDepartureTimes().get(1).split(" ")[0]);
         }
 
         return v;

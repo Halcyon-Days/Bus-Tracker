@@ -3,7 +3,7 @@
     android:layout_width="match_parent" android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/stopNo"
+        android:id="@+id/detailsRow1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -33,7 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_alignEnd="@+id/nextTime"
         android:layout_alignRight="@+id/nextTime"
-        android:layout_below="@+id/stopNo"
+        android:layout_below="@+id/detailsRow1"
         android:text="laterTime"
         android:textAlignment="viewEnd"
         android:textSize="10sp" />
