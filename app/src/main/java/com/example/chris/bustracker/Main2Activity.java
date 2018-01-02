@@ -27,6 +27,7 @@ public class Main2Activity extends AppCompatActivity {
         returnText = (TextView) findViewById(R.id.returnTxt);
         searchText = (EditText) findViewById(R.id.searchBar);
 
+        //adds search button to right of textbox, which starts asynchronous task when clicked
         FloatingActionButton searchBtn = (FloatingActionButton) findViewById(R.id.searchBtn);
         searchBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -36,11 +37,13 @@ public class Main2Activity extends AppCompatActivity {
         });
     }
 
+    //asynchronous task to find stop info for given route number
     private class AsyncBusStop extends AsyncTask<Context, Void, BusStop> {
         protected BusStop doInBackground(Context ... input) {
             BusStop newStop = null;
 
             try {
+                //gets route info for given route number
                 newStop = TranslinkTracker.getRouteInfo( input[0], searchText.getText().toString());
                 return newStop;
             }  catch (IOException e) {
@@ -50,9 +53,12 @@ public class Main2Activity extends AppCompatActivity {
         }
 
         protected void onPostExecute(BusStop stop) {
+            //updates text boxes based on result of searching for stop
             if(stop != null) {
                 if(!Singleton.getInstance().isStopInList(stop.getStopNo())) {
                     returnText.setText("Added " + stop.getStopNo() + " to list!");
+
+                    //adds stop to Singleton list
                     Singleton.getInstance().addStop(stop);
                 } else {
                     returnText.setText("Stop has already been added to List!" );

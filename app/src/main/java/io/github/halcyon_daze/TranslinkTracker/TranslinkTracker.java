@@ -27,7 +27,7 @@ public class TranslinkTracker {
      */
     public static BusStop getRouteInfo(Context context, String routeNo) throws FileNotFoundException, IOException  {
         String api = getAPIKey(context);
-        return getRouteInfo("http://api.translink.ca/rttiapi/v1/stops/" + routeNo + "/estimates?apikey=" + api + "&timeframe=1440", routeNo);
+        return getRouteInfo("http://api.translink.ca/rttiapi/v1/stops/" + routeNo + "/estimates?apikey=" + api + "&timeframe=1440&count=6", routeNo);
     }
     
     /*

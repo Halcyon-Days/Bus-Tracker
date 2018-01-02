@@ -9,6 +9,9 @@ import android.widget.TextView;
 
 import io.github.halcyon_daze.TranslinkTracker.BusStop;
 
+/*
+    Activity that shows the details of a bus when it is clicked in the listview in the mainActivity
+ */
 public class BusDetails extends AppCompatActivity {
 
     BusStop thisStop;
@@ -24,22 +27,29 @@ public class BusDetails extends AppCompatActivity {
         TextView directionDetails = (TextView) findViewById(R.id.directionDetails);
         TextView nextBusDetails = (TextView) findViewById(R.id.nextBusses);
 
+        //gets intent passed with activity call, which is the index of the BusStop in the list
         Intent in = getIntent();
         int index = in.getIntExtra("BusStopPosition", 0);
 
+        //gets the stop from the stop list from it's index
         thisStop = Singleton.getInstance().getStopList().get(index);
 
+        //sets the info for the buses in the list
         stopNoDetails.setText("Stop #: " + thisStop.getStopNo());
         routeNoDetails.setText("Route #: " + thisStop.getRouteNo());
         routeDetails.setText("Route Name: " + thisStop.getRouteName());
         directionDetails.setText("Direction: " + thisStop.getDirection());
         nextBusDetails.setText("Next Times: \n" + thisStop.getNextDepartureTimes().toString().replace(",", "\n").replace("[", " ").replace("]", ""));
 
+        // implements button to delete stops from the list
         Button deleteBusButton = (Button) findViewById(R.id.deleteBusButton);
         deleteBusButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Singleton.getInstance().getStopList().remove(thisStop);
+                Singleton.getInstance().removeStop(thisStop);
+
+                Intent mainActivity = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(mainActivity);
             }
         });
     }

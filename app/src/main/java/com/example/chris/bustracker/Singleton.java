@@ -12,7 +12,7 @@ import io.github.halcyon_daze.TranslinkTracker.BusStop;
 
 /*
     Singleton used to access list of busses in different activities
-    Also has a method to add busstops to the list concurrently, but the list remains exposed, so concurrency issues still apply
+    Also has a method to add busstops to the list concurrently, but the list remains exposed, CONCURRENCY ISSUES ARE STILL POSSIBLE
  */
 public final class Singleton {
     private static final Singleton SELF = new Singleton();
@@ -31,21 +31,27 @@ public final class Singleton {
         return stopList;
     }
 
+    /*
+    Method to check if input Stop number is in the list
+     */
     public boolean isStopInList(String stopNo) {
         for(BusStop s: stopList) {
             if(s.getStopNo().equals(stopNo)) {
                 return true;
             }
         }
-
         return false;
     }
 
+    /*
+        Adds stop to list
+     */
     public void addStop(BusStop s) {
         listLock.lock();
         stopList.add(s);
         listLock.unlock();
     }
+
 
     public void removeStop(BusStop s) {
         listLock.lock();

@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         lastUpdatedText = (TextView) findViewById(R.id.lastUpdated);
         final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
+        //Creates adapter which shows the details of a bus when it is clicked in the listview
         BusTimeAdapter busAdapter = new BusTimeAdapter(this, Singleton.getInstance().getStopList());
         nextTimesList.setAdapter(busAdapter);
         nextTimesList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -69,7 +70,10 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //sets text at bottom that shows the last updated time
         lastUpdatedText.setText("Last updated: " + Calendar.getInstance().getTime().toString());
+
+        //sets timer for refreshing the stop in the list based on the settings
         refreshTimer = Integer.parseInt(PreferenceManager.getDefaultSharedPreferences(this).getString("example_text", "5")) * 60 * 1000; //refresh timer set to 1 minutes initially
         if(refreshTimer < 1000) {                       //if refresh rate is shorter than a minute, set to a minute
             refreshTimer = 1000;
@@ -81,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
 
+        // Sets button which changes views when adding a new bus
         FloatingActionButton newBusButton = (FloatingActionButton) findViewById(R.id.addNewBusBtn);
         newBusButton.setOnClickListener(new View.OnClickListener() {
           @Override
@@ -90,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
           }
         });
 
+        //sets button to refresh all the stop in the list when clicked
         FloatingActionButton refreshButton = (FloatingActionButton) findViewById(R.id.refreshBtn);
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -98,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        //handler for periodically refreshing the stops in the list according to the refreshtimer value
         final Handler refreshHandler = new Handler();
         Runnable refreshCode = new Runnable() {
             @Override
@@ -112,8 +119,10 @@ public class MainActivity extends AppCompatActivity {
             }
         };
 
+        //starts refresh handler
         refreshHandler.post(refreshCode);
 
+        //new thread that updates the progress bar on the bottom of the view
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -130,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                     });
 
                     try {
-                        Thread.sleep(refreshTimer/100);
+                        Thread.sleep(refreshTimer/100);     //thread sleeps for 100th of the refreshTimer value, and repeats 100 times to fill the bar
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -206,18 +215,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void refreshStops() {
+        //starts asynchronous task to update all stops in the list
         new AsyncBusStop().execute( );
     }
+
 
     private class AsyncBusStop extends AsyncTask<Void, Void, ArrayList<BusStop>> {
         protected ArrayList<BusStop> doInBackground(Void ... input) {
             ArrayList<BusStop> newList = new ArrayList<>();
 
             try {
+                //for each stop in the list, gets the stop number, requests its stop info from the translink api, and adds it to a new list
                 for(BusStop s: Singleton.getInstance().getStopList()) {
                     newList.add(TranslinkTracker.getRouteInfo(getApplicationContext(), s.getStopNo()));
                 }
 
+                //updates the list in the Singleton with the new list of updated stops
                 Singleton.getInstance().changeStopList(newList);
             }  catch (IOException e) {
             }
@@ -227,8 +240,11 @@ public class MainActivity extends AppCompatActivity {
 
         protected void onPostExecute(ArrayList<BusStop> stopList) {
             if(stopList != null) {
+                //changes listview to display new stops
                 BusTimeAdapter busAdapter = new BusTimeAdapter(getApplicationContext(), Singleton.getInstance().getStopList());
                 nextTimesList.setAdapter(busAdapter);
+
+                //updates last updated text at bottom of view
                 lastUpdatedText.setText("Last updated: " + Calendar.getInstance().getTime().toString());
             } else {
             }
