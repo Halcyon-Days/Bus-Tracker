@@ -10,9 +10,10 @@ Some features that may be implemented at a later date:
 - More filters for stops(restrict to certain routes at the stop, time frame to search within)
 - Search features for stops in areas, on a bus's route, or by street 
 - Tracking for certain buses
-- real-time schedule updates for crashes, delays
-- traffic updates
+- Real-time schedule updates for crashes, delays
+- Traffic updates
 - Map feature to find stops
+- Improve thread safety
 
 Some of the data used in this product or service is provided by permission of TransLink. TransLink assumes no responsibility for the accuracy or currency of the Data used in this product or service.
 
