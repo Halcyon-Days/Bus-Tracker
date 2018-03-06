@@ -1,4 +1,4 @@
-# Bus-Tracker-
+# Bus-Tracker
 
 Uses Translink API to access and display info for bus stops, and displays it in an android app. Some pictures can be found at https://drive.google.com/open?id=1b_1MFvjnsY5Mo3diAi4UCyDxt_mlu6ya.
 
